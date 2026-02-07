@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <title>Tarefas do Dia</title>
+
+    <style>
+        body{ 
+            background-color: antiquewhite;
+        }
+
+        div{
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .tarefa-normal {
+            color: black;
+        }
+
+        .tarefa-selecionada {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="quadro">
+        <h1>Tarefas do Dia</h1>
+
+        <form>
+            <p>
+                <label>
+                    Tarefa:
+                    <input type="text" id="inTarefa">
+                </label>
+            </p>
+
+            <input type="button" value="Adicionar" id="btAdicionar" class="btn btn-success">
+            <input type="button" value="Selecionar" id="btSelecionar" class="btn btn-secondary">
+            <input type="button" value="Retirar Selecionada" id="btRetirar" class="btn btn-danger">
+        </form>
+    </div>
+
+    <script>
+        // Referências aos elementos principais
+        const frm = document.querySelector("form");
+        const quadro = document.querySelector("#quadro");
+
+        // adicionar tarefa
+        frm.btAdicionar.addEventListener("click", (e) => {
+            e.preventDefault(); // evita comportamento padrão do form
+
+            const tarefa = frm.inTarefa.value.trim();
+
+            // Verifica se o campo está vazio
+            if (tarefa === "") {
+                alert("Digite uma tarefa!");
+                frm.inTarefa.focus();
+                return;
+            }
+
+            // Cria o elemento h5
+            const h5 = document.createElement("h5");
+
+            // Define a classe inicial da tarefa
+            h5.className = "tarefa-normal";
+
+            // Define o texto da tarefa
+            h5.innerText = tarefa;
+
+            // Adiciona a tarefa no quadro
+            quadro.appendChild(h5);
+
+            // Limpa e foca o input
+            frm.inTarefa.value = "";
+            frm.inTarefa.focus();
+        });
+
+        
+         //  SELECIONAR TAREFA
+        
+        frm.btSelecionar.addEventListener("click", () => {
+            const tarefas = document.querySelectorAll("h5");
+
+            // Verifica se há tarefas
+            if (tarefas.length === 0) {
+                alert("Não há tarefas para selecionar!");
+                return;
+            }
+
+            let aux = -1; // guarda o índice da tarefa selecionada
+
+            // Procura a tarefa selecionada
+            for (let i = 0; i < tarefas.length; i++) {
+                if (tarefas[i].className === "tarefa-selecionada") {
+                    aux = i;
+                    tarefas[i].className = "tarefa-normal"; // desmarca
+                    break;
+                }
+            }
+
+            // Se for a última, volta para a primeira
+            if (aux === tarefas.length - 1) {
+                aux = -1;
+            }
+
+            // Marca a próxima tarefa
+            tarefas[aux + 1].className = "tarefa-selecionada";
+        });
+
+        //RETIRAR TAREFA SELECIONADA
+        
+        frm.btRetirar.addEventListener("click", () => {
+            const tarefas = document.querySelectorAll("h5");
+            let aux = -1;
+
+            // Procura a tarefa selecionada
+            tarefas.forEach((tarefa, i) => {
+                if (tarefa.className === "tarefa-selecionada") {
+                    aux = i;
+                }
+            });
+
+            // Se nenhuma estiver selecionada
+            if (aux === -1) {
+                alert("Selecione uma tarefa para remover!");
+                return;
+            }
+
+            // Confirma exclusão
+            if (confirm(`Confirma exclusão de "${tarefas[aux].innerText}"?`)) {
+                quadro.removeChild(tarefas[aux]);
+            }
+        });
+    </script>
+
+</body>
+</html>
